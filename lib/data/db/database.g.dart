@@ -179,8 +179,8 @@ class $ProvidersTable extends Providers
     return $ProvidersTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<ProviderKind, String, String> $converterkind =
-      const EnumNameConverter<ProviderKind>(ProviderKind.values);
+  static TypeConverter<ProviderKind, String> $converterkind =
+      const WireEnumConverter<ProviderKind>(ProviderKind.fromWire);
 }
 
 class ProviderRow extends DataClass implements Insertable<ProviderRow> {
@@ -240,9 +240,7 @@ class ProviderRow extends DataClass implements Insertable<ProviderRow> {
     return ProviderRow(
       key: serializer.fromJson<String>(json['key']),
       displayName: serializer.fromJson<String>(json['displayName']),
-      kind: $ProvidersTable.$converterkind.fromJson(
-        serializer.fromJson<String>(json['kind']),
-      ),
+      kind: serializer.fromJson<ProviderKind>(json['kind']),
       brandColor: serializer.fromJson<String>(json['brandColor']),
       logoAsset: serializer.fromJson<String>(json['logoAsset']),
       notificationPackage: serializer.fromJson<String?>(
@@ -256,9 +254,7 @@ class ProviderRow extends DataClass implements Insertable<ProviderRow> {
     return <String, dynamic>{
       'key': serializer.toJson<String>(key),
       'displayName': serializer.toJson<String>(displayName),
-      'kind': serializer.toJson<String>(
-        $ProvidersTable.$converterkind.toJson(kind),
-      ),
+      'kind': serializer.toJson<ProviderKind>(kind),
       'brandColor': serializer.toJson<String>(brandColor),
       'logoAsset': serializer.toJson<String>(logoAsset),
       'notificationPackage': serializer.toJson<String?>(notificationPackage),
@@ -718,8 +714,8 @@ class $AccountsTable extends Accounts
     return $AccountsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<AccountRole, String, String> $converterrole =
-      const EnumNameConverter<AccountRole>(AccountRole.values);
+  static TypeConverter<AccountRole, String> $converterrole =
+      const WireEnumConverter<AccountRole>(AccountRole.fromWire);
 }
 
 class AccountRow extends DataClass implements Insertable<AccountRow> {
@@ -796,9 +792,7 @@ class AccountRow extends DataClass implements Insertable<AccountRow> {
       userId: serializer.fromJson<String>(json['userId']),
       providerKey: serializer.fromJson<String>(json['providerKey']),
       label: serializer.fromJson<String>(json['label']),
-      role: $AccountsTable.$converterrole.fromJson(
-        serializer.fromJson<String>(json['role']),
-      ),
+      role: serializer.fromJson<AccountRole>(json['role']),
       includeInSpendable: serializer.fromJson<bool>(json['includeInSpendable']),
       isArchived: serializer.fromJson<bool>(json['isArchived']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -814,9 +808,7 @@ class AccountRow extends DataClass implements Insertable<AccountRow> {
       'userId': serializer.toJson<String>(userId),
       'providerKey': serializer.toJson<String>(providerKey),
       'label': serializer.toJson<String>(label),
-      'role': serializer.toJson<String>(
-        $AccountsTable.$converterrole.toJson(role),
-      ),
+      'role': serializer.toJson<AccountRole>(role),
       'includeInSpendable': serializer.toJson<bool>(includeInSpendable),
       'isArchived': serializer.toJson<bool>(isArchived),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -1237,8 +1229,8 @@ class $BalanceSnapshotsTable extends BalanceSnapshots
 
   static JsonTypeConverter2<Money, int, int> $converterbalanceCents =
       const MoneyConverter();
-  static JsonTypeConverter2<SnapshotSource, String, String> $convertersource =
-      const EnumNameConverter<SnapshotSource>(SnapshotSource.values);
+  static TypeConverter<SnapshotSource, String> $convertersource =
+      const WireEnumConverter<SnapshotSource>(SnapshotSource.fromWire);
 }
 
 class BalanceSnapshotRow extends DataClass
@@ -1301,9 +1293,7 @@ class BalanceSnapshotRow extends DataClass
       balanceCents: $BalanceSnapshotsTable.$converterbalanceCents.fromJson(
         serializer.fromJson<int>(json['balanceCents']),
       ),
-      source: $BalanceSnapshotsTable.$convertersource.fromJson(
-        serializer.fromJson<String>(json['source']),
-      ),
+      source: serializer.fromJson<SnapshotSource>(json['source']),
       capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
       note: serializer.fromJson<String?>(json['note']),
     );
@@ -1317,9 +1307,7 @@ class BalanceSnapshotRow extends DataClass
       'balanceCents': serializer.toJson<int>(
         $BalanceSnapshotsTable.$converterbalanceCents.toJson(balanceCents),
       ),
-      'source': serializer.toJson<String>(
-        $BalanceSnapshotsTable.$convertersource.toJson(source),
-      ),
+      'source': serializer.toJson<SnapshotSource>(source),
       'capturedAt': serializer.toJson<DateTime>(capturedAt),
       'note': serializer.toJson<String?>(note),
     };
@@ -2212,10 +2200,10 @@ class $TxnsTable extends Txns with TableInfo<$TxnsTable, TxnRow> {
 
   static JsonTypeConverter2<Money, int, int> $converteramountCents =
       const MoneyConverter();
-  static JsonTypeConverter2<TxnDirection, String, String> $converterdirection =
-      const EnumNameConverter<TxnDirection>(TxnDirection.values);
-  static JsonTypeConverter2<TxnSource, String, String> $convertersource =
-      const EnumNameConverter<TxnSource>(TxnSource.values);
+  static TypeConverter<TxnDirection, String> $converterdirection =
+      const WireEnumConverter<TxnDirection>(TxnDirection.fromWire);
+  static TypeConverter<TxnSource, String> $convertersource =
+      const WireEnumConverter<TxnSource>(TxnSource.fromWire);
 }
 
 class TxnRow extends DataClass implements Insertable<TxnRow> {
@@ -2323,16 +2311,12 @@ class TxnRow extends DataClass implements Insertable<TxnRow> {
       amountCents: $TxnsTable.$converteramountCents.fromJson(
         serializer.fromJson<int>(json['amountCents']),
       ),
-      direction: $TxnsTable.$converterdirection.fromJson(
-        serializer.fromJson<String>(json['direction']),
-      ),
+      direction: serializer.fromJson<TxnDirection>(json['direction']),
       categoryKey: serializer.fromJson<String>(json['categoryKey']),
       merchantRaw: serializer.fromJson<String?>(json['merchantRaw']),
       note: serializer.fromJson<String?>(json['note']),
       occurredAt: serializer.fromJson<DateTime>(json['occurredAt']),
-      source: $TxnsTable.$convertersource.fromJson(
-        serializer.fromJson<String>(json['source']),
-      ),
+      source: serializer.fromJson<TxnSource>(json['source']),
       categoryConfidence: serializer.fromJson<double>(
         json['categoryConfidence'],
       ),
@@ -2350,16 +2334,12 @@ class TxnRow extends DataClass implements Insertable<TxnRow> {
       'amountCents': serializer.toJson<int>(
         $TxnsTable.$converteramountCents.toJson(amountCents),
       ),
-      'direction': serializer.toJson<String>(
-        $TxnsTable.$converterdirection.toJson(direction),
-      ),
+      'direction': serializer.toJson<TxnDirection>(direction),
       'categoryKey': serializer.toJson<String>(categoryKey),
       'merchantRaw': serializer.toJson<String?>(merchantRaw),
       'note': serializer.toJson<String?>(note),
       'occurredAt': serializer.toJson<DateTime>(occurredAt),
-      'source': serializer.toJson<String>(
-        $TxnsTable.$convertersource.toJson(source),
-      ),
+      'source': serializer.toJson<TxnSource>(source),
       'categoryConfidence': serializer.toJson<double>(categoryConfidence),
       'userCorrected': serializer.toJson<bool>(userCorrected),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -2913,8 +2893,8 @@ class $ObligationsTable extends Obligations
 
   static JsonTypeConverter2<Money, int, int> $converteramountCents =
       const MoneyConverter();
-  static JsonTypeConverter2<Cadence, String, String> $convertercadence =
-      const EnumNameConverter<Cadence>(Cadence.values);
+  static TypeConverter<Cadence, String> $convertercadence =
+      const WireEnumConverter<Cadence>(Cadence.fromWire);
 }
 
 class ObligationRow extends DataClass implements Insertable<ObligationRow> {
@@ -2991,9 +2971,7 @@ class ObligationRow extends DataClass implements Insertable<ObligationRow> {
       amountCents: $ObligationsTable.$converteramountCents.fromJson(
         serializer.fromJson<int>(json['amountCents']),
       ),
-      cadence: $ObligationsTable.$convertercadence.fromJson(
-        serializer.fromJson<String>(json['cadence']),
-      ),
+      cadence: serializer.fromJson<Cadence>(json['cadence']),
       nextDueOn: serializer.fromJson<DateTime>(json['nextDueOn']),
       categoryKey: serializer.fromJson<String>(json['categoryKey']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -3010,9 +2988,7 @@ class ObligationRow extends DataClass implements Insertable<ObligationRow> {
       'amountCents': serializer.toJson<int>(
         $ObligationsTable.$converteramountCents.toJson(amountCents),
       ),
-      'cadence': serializer.toJson<String>(
-        $ObligationsTable.$convertercadence.toJson(cadence),
-      ),
+      'cadence': serializer.toJson<Cadence>(cadence),
       'nextDueOn': serializer.toJson<DateTime>(nextDueOn),
       'categoryKey': serializer.toJson<String>(categoryKey),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -3480,12 +3456,10 @@ class $IncomeExpectationsTable extends IncomeExpectations
 
   static JsonTypeConverter2<Money, int, int> $converteramountCents =
       const MoneyConverter();
-  static JsonTypeConverter2<Cadence, String, String> $convertercadence =
-      const EnumNameConverter<Cadence>(Cadence.values);
-  static JsonTypeConverter2<IncomeConfidence, String, String>
-  $converterconfidence = const EnumNameConverter<IncomeConfidence>(
-    IncomeConfidence.values,
-  );
+  static TypeConverter<Cadence, String> $convertercadence =
+      const WireEnumConverter<Cadence>(Cadence.fromWire);
+  static TypeConverter<IncomeConfidence, String> $converterconfidence =
+      const WireEnumConverter<IncomeConfidence>(IncomeConfidence.fromWire);
 }
 
 class IncomeExpectationRow extends DataClass
@@ -3567,13 +3541,9 @@ class IncomeExpectationRow extends DataClass
       amountCents: $IncomeExpectationsTable.$converteramountCents.fromJson(
         serializer.fromJson<int>(json['amountCents']),
       ),
-      cadence: $IncomeExpectationsTable.$convertercadence.fromJson(
-        serializer.fromJson<String>(json['cadence']),
-      ),
+      cadence: serializer.fromJson<Cadence>(json['cadence']),
       nextExpectedOn: serializer.fromJson<DateTime>(json['nextExpectedOn']),
-      confidence: $IncomeExpectationsTable.$converterconfidence.fromJson(
-        serializer.fromJson<String>(json['confidence']),
-      ),
+      confidence: serializer.fromJson<IncomeConfidence>(json['confidence']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
@@ -3588,13 +3558,9 @@ class IncomeExpectationRow extends DataClass
       'amountCents': serializer.toJson<int>(
         $IncomeExpectationsTable.$converteramountCents.toJson(amountCents),
       ),
-      'cadence': serializer.toJson<String>(
-        $IncomeExpectationsTable.$convertercadence.toJson(cadence),
-      ),
+      'cadence': serializer.toJson<Cadence>(cadence),
       'nextExpectedOn': serializer.toJson<DateTime>(nextExpectedOn),
-      'confidence': serializer.toJson<String>(
-        $IncomeExpectationsTable.$converterconfidence.toJson(confidence),
-      ),
+      'confidence': serializer.toJson<IncomeConfidence>(confidence),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
@@ -4124,12 +4090,12 @@ class $EnvelopesTable extends Envelopes
     return $EnvelopesTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<EnvelopeShape, String, String> $convertershape =
-      const EnumNameConverter<EnvelopeShape>(EnvelopeShape.values);
+  static TypeConverter<EnvelopeShape, String> $convertershape =
+      const WireEnumConverter<EnvelopeShape>(EnvelopeShape.fromWire);
   static JsonTypeConverter2<Money, int, int> $converterrefillCents =
       const MoneyConverter();
-  static JsonTypeConverter2<Cadence, String, String> $converterrefillCadence =
-      const EnumNameConverter<Cadence>(Cadence.values);
+  static TypeConverter<Cadence, String> $converterrefillCadence =
+      const WireEnumConverter<Cadence>(Cadence.fromWire);
   static TypeConverter<List<String>, String> $converterallowBorrowFrom =
       const StringListConverter();
 }
@@ -4233,15 +4199,11 @@ class EnvelopeRow extends DataClass implements Insertable<EnvelopeRow> {
       id: serializer.fromJson<String>(json['id']),
       userId: serializer.fromJson<String>(json['userId']),
       label: serializer.fromJson<String>(json['label']),
-      shape: $EnvelopesTable.$convertershape.fromJson(
-        serializer.fromJson<String>(json['shape']),
-      ),
+      shape: serializer.fromJson<EnvelopeShape>(json['shape']),
       refillCents: $EnvelopesTable.$converterrefillCents.fromJson(
         serializer.fromJson<int>(json['refillCents']),
       ),
-      refillCadence: $EnvelopesTable.$converterrefillCadence.fromJson(
-        serializer.fromJson<String>(json['refillCadence']),
-      ),
+      refillCadence: serializer.fromJson<Cadence>(json['refillCadence']),
       refillAnchor: serializer.fromJson<String>(json['refillAnchor']),
       allowBorrowFrom: serializer.fromJson<List<String>>(
         json['allowBorrowFrom'],
@@ -4259,15 +4221,11 @@ class EnvelopeRow extends DataClass implements Insertable<EnvelopeRow> {
       'id': serializer.toJson<String>(id),
       'userId': serializer.toJson<String>(userId),
       'label': serializer.toJson<String>(label),
-      'shape': serializer.toJson<String>(
-        $EnvelopesTable.$convertershape.toJson(shape),
-      ),
+      'shape': serializer.toJson<EnvelopeShape>(shape),
       'refillCents': serializer.toJson<int>(
         $EnvelopesTable.$converterrefillCents.toJson(refillCents),
       ),
-      'refillCadence': serializer.toJson<String>(
-        $EnvelopesTable.$converterrefillCadence.toJson(refillCadence),
-      ),
+      'refillCadence': serializer.toJson<Cadence>(refillCadence),
       'refillAnchor': serializer.toJson<String>(refillAnchor),
       'allowBorrowFrom': serializer.toJson<List<String>>(allowBorrowFrom),
       'priority': serializer.toJson<int>(priority),

@@ -15,6 +15,22 @@ class MoneyConverter extends TypeConverter<Money, int>
   int toSql(Money value) => value.centavos;
 }
 
+/// Stores an enum by its `wireName`, the string BUILD_PLAN.md Section 7 and
+/// the Supabase schema expect. Drift's `textEnum` would store the Dart
+/// `Enum.name` instead (`moneyOut`, not `out`), which a rename in Dart would
+/// break and the server would reject.
+class WireEnumConverter<T extends WireNamed> extends TypeConverter<T, String> {
+  const WireEnumConverter(this._fromWire);
+
+  final T Function(String) _fromWire;
+
+  @override
+  T fromSql(String fromDb) => _fromWire(fromDb);
+
+  @override
+  String toSql(T value) => value.wireName;
+}
+
 /// Stores a list of envelope ids as a JSON array, used by `allow_borrow_from`.
 class StringListConverter extends TypeConverter<List<String>, String> {
   const StringListConverter();
@@ -43,7 +59,9 @@ class StringListConverter extends TypeConverter<List<String>, String> {
 class Providers extends Table {
   TextColumn get key => text()();
   TextColumn get displayName => text()();
-  TextColumn get kind => textEnum<ProviderKind>()();
+  TextColumn get kind => text().map(
+    const WireEnumConverter<ProviderKind>(ProviderKind.fromWire),
+  )();
   TextColumn get brandColor => text()();
   TextColumn get logoAsset => text()();
 
@@ -63,7 +81,8 @@ class Accounts extends Table {
       text().withDefault(const Constant<String>('local'))();
   TextColumn get providerKey => text().references(Providers, #key)();
   TextColumn get label => text()();
-  TextColumn get role => textEnum<AccountRole>()();
+  TextColumn get role =>
+      text().map(const WireEnumConverter<AccountRole>(AccountRole.fromWire))();
 
   /// False for money the user does not treat as available, such as a bond.
   BoolColumn get includeInSpendable =>
@@ -87,7 +106,9 @@ class BalanceSnapshots extends Table {
   TextColumn get accountId =>
       text().references(Accounts, #id, onDelete: KeyAction.cascade)();
   IntColumn get balanceCents => integer().map(const MoneyConverter())();
-  TextColumn get source => textEnum<SnapshotSource>()();
+  TextColumn get source => text().map(
+    const WireEnumConverter<SnapshotSource>(SnapshotSource.fromWire),
+  )();
   DateTimeColumn get capturedAt => dateTime()();
   TextColumn get note => text().nullable()();
 
@@ -120,14 +141,17 @@ class Txns extends Table {
 
   /// Always positive. [direction] carries the sign.
   IntColumn get amountCents => integer().map(const MoneyConverter())();
-  TextColumn get direction => textEnum<TxnDirection>()();
+  TextColumn get direction => text().map(
+    const WireEnumConverter<TxnDirection>(TxnDirection.fromWire),
+  )();
   TextColumn get categoryKey => text().references(Categories, #key)();
 
   /// The source text the categorizer reads.
   TextColumn get merchantRaw => text().nullable()();
   TextColumn get note => text().nullable()();
   DateTimeColumn get occurredAt => dateTime()();
-  TextColumn get source => textEnum<TxnSource>()();
+  TextColumn get source =>
+      text().map(const WireEnumConverter<TxnSource>(TxnSource.fromWire))();
   RealColumn get categoryConfidence =>
       real().withDefault(const Constant<double>(0))();
 
@@ -149,7 +173,8 @@ class Obligations extends Table {
       text().withDefault(const Constant<String>('local'))();
   TextColumn get label => text()();
   IntColumn get amountCents => integer().map(const MoneyConverter())();
-  TextColumn get cadence => textEnum<Cadence>()();
+  TextColumn get cadence =>
+      text().map(const WireEnumConverter<Cadence>(Cadence.fromWire))();
   DateTimeColumn get nextDueOn => dateTime()();
   TextColumn get categoryKey => text().references(Categories, #key)();
   DateTimeColumn get updatedAt => dateTime()();
@@ -167,9 +192,12 @@ class IncomeExpectations extends Table {
       text().withDefault(const Constant<String>('local'))();
   TextColumn get label => text()();
   IntColumn get amountCents => integer().map(const MoneyConverter())();
-  TextColumn get cadence => textEnum<Cadence>()();
+  TextColumn get cadence =>
+      text().map(const WireEnumConverter<Cadence>(Cadence.fromWire))();
   DateTimeColumn get nextExpectedOn => dateTime()();
-  TextColumn get confidence => textEnum<IncomeConfidence>()();
+  TextColumn get confidence => text().map(
+    const WireEnumConverter<IncomeConfidence>(IncomeConfidence.fromWire),
+  )();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get deletedAt => dateTime().nullable()();
 
@@ -184,11 +212,14 @@ class Envelopes extends Table {
   TextColumn get userId =>
       text().withDefault(const Constant<String>('local'))();
   TextColumn get label => text()();
-  TextColumn get shape => textEnum<EnvelopeShape>()();
+  TextColumn get shape => text().map(
+    const WireEnumConverter<EnvelopeShape>(EnvelopeShape.fromWire),
+  )();
 
   /// How much lands at each refill. 200000 is a PHP 2,000 weekly budget.
   IntColumn get refillCents => integer().map(const MoneyConverter())();
-  TextColumn get refillCadence => textEnum<Cadence>()();
+  TextColumn get refillCadence =>
+      text().map(const WireEnumConverter<Cadence>(Cadence.fromWire))();
 
   /// A weekday name for a weekly refill, or a day of month for a monthly one.
   TextColumn get refillAnchor => text()();

@@ -36,7 +36,7 @@ class BaonDatabase extends _$BaonDatabase {
   BaonDatabase.memory() : super(openMemoryDatabase());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -45,12 +45,41 @@ class BaonDatabase extends _$BaonDatabase {
       await _seedCategories();
       await _createIndexes();
     },
+    onUpgrade: (Migrator m, int from, int to) async {
+      if (from < 2) {
+        await rewriteLegacyEnumNames();
+      }
+    },
     beforeOpen: (OpeningDetails details) async {
       // Foreign keys are off by default in SQLite. Without this the cascade
       // deletes above never fire and orphan rows build up silently.
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  /// Schema 2. Schema 1 stored enums by their Dart name, so rows from it say
+  /// `digitalBank` or `moneyOut` where Section 7 says `digital_bank` or `out`.
+  /// Only these four values differ between the two names; every other enum
+  /// value is the same string either way.
+  Future<void> rewriteLegacyEnumNames() async {
+    await transaction(() async {
+      for (final ProviderKind kind in <ProviderKind>[
+        ProviderKind.digitalBank,
+        ProviderKind.traditionalBank,
+      ]) {
+        await customStatement(
+          'UPDATE providers SET kind = ? WHERE kind = ?',
+          <Object>[kind.wireName, kind.name],
+        );
+      }
+      for (final TxnDirection direction in TxnDirection.values) {
+        await customStatement(
+          'UPDATE txns SET direction = ? WHERE direction = ?',
+          <Object>[direction.wireName, direction.name],
+        );
+      }
+    });
+  }
 
   Future<void> _seedCategories() async {
     await batch(
