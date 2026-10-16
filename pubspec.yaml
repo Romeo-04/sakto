@@ -39,6 +39,9 @@ dependencies:
   intl: ^0.20.3
   path: ^1.9.1
   path_provider: ^2.1.6
+  # Already in the lockfile through drift. Listed directly because
+  # lib/data/db/database_key.dart opens the file to encrypt it in place.
+  sqlite3: ^3.4.0
   uuid: ^4.6.0
 
 # sqlite3 3.5.x ships native build hooks, which build_runner cannot compile
@@ -46,6 +49,13 @@ dependencies:
 # without them. Remove this override once build_runner supports build hooks.
 dependency_overrides:
   sqlite3: 3.4.0
+
+# BUILD_PLAN.md Section 12: bundle SQLCipher instead of plain SQLite, so the
+# database file is encrypted at rest. See lib/data/db/database_key.dart.
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlcipher
 
 dev_dependencies:
   build_runner: ^2.15.1
