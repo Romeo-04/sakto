@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/common.dart' show CommonDatabase;
+import 'package:sqlite3/sqlite3.dart' show sqlite3;
 
 /// The single seam where the database file is opened.
 ///
@@ -18,6 +19,10 @@ import 'package:sqlite3/common.dart' show CommonDatabase;
 QueryExecutor openBaonDatabase({String name = 'baon'}) {
   return DatabaseConnection.delayed(
     Future<DatabaseConnection>(() async {
+      // drift_flutter sets this too, but only after the file is prepared.
+      // The one-time encryption needs it first: on Android SQLite cannot
+      // reach its default temporary directory.
+      sqlite3.tempDirectory = (await getTemporaryDirectory()).path;
       // The same location drift_flutter uses by default, so a file created
       // before encryption is found and encrypted rather than abandoned.
       final String path = p.join(

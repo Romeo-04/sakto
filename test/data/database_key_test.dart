@@ -13,12 +13,34 @@ import 'package:sqlite3/sqlite3.dart';
 class MemoryKeyStore implements DatabaseKeyStore {
   String? value;
 
-  @override
-  Future<String?> read() async => value;
+  /// Results to hand out before [value], one per read: a String, null, or
+  /// an Exception to throw. Simulates a keystore that is slow to come up.
+  final List<Object?> script = <Object?>[];
+  int reads = 0;
+  int writes = 0;
 
   @override
-  Future<void> write(String key) async => value = key;
+  Future<String?> read() async {
+    reads++;
+    if (script.isNotEmpty) {
+      final Object? next = script.removeAt(0);
+      if (next is Exception) {
+        throw next;
+      }
+      return next as String?;
+    }
+    return value;
+  }
+
+  @override
+  Future<void> write(String key) async {
+    writes++;
+    value = key;
+  }
 }
+
+Future<String> prepare(String path, DatabaseKeyStore store) =>
+    prepareDatabaseFile(path, store, retryDelay: Duration.zero);
 
 void main() {
   late Directory dir;
@@ -69,7 +91,7 @@ void main() {
   });
 
   test('a fresh install creates a key and no file', () async {
-    final String key = await prepareDatabaseFile(path, store);
+    final String key = await prepare(path, store);
     expect(key, store.value);
     expect(File(path).existsSync(), isFalse);
   });
@@ -78,7 +100,7 @@ void main() {
     writePlaintextDatabase();
     expect(isPlaintextSqlite(File(path)), isTrue);
 
-    final String key = await prepareDatabaseFile(path, store);
+    final String key = await prepare(path, store);
 
     expect(isPlaintextSqlite(File(path)), isFalse);
     final Database db = openWithKey(key);
@@ -89,7 +111,7 @@ void main() {
 
   test('the encrypted file cannot be read without the key', () async {
     writePlaintextDatabase();
-    await prepareDatabaseFile(path, store);
+    await prepare(path, store);
 
     final Database db = sqlite3.open(path);
     addTearDown(db.close);
@@ -101,10 +123,10 @@ void main() {
 
   test('an encrypted file with its key is left as it is', () async {
     writePlaintextDatabase();
-    final String key = await prepareDatabaseFile(path, store);
+    final String key = await prepare(path, store);
     final List<int> before = File(path).readAsBytesSync();
 
-    expect(await prepareDatabaseFile(path, store), key);
+    expect(await prepare(path, store), key);
     expect(File(path).readAsBytesSync(), before);
   });
 
@@ -112,10 +134,10 @@ void main() {
     'an encrypted file whose key was lost is set aside, not opened',
     () async {
       writePlaintextDatabase();
-      await prepareDatabaseFile(path, store);
+      await prepare(path, store);
       final MemoryKeyStore wiped = MemoryKeyStore();
 
-      final String newKey = await prepareDatabaseFile(path, wiped);
+      final String newKey = await prepare(path, wiped);
 
       expect(newKey, wiped.value);
       expect(File(path).existsSync(), isFalse);
@@ -127,4 +149,76 @@ void main() {
       expect(kept, hasLength(1));
     },
   );
+
+  test('a key that is slow to read is waited for, not replaced', () async {
+    writePlaintextDatabase();
+    final String key = await prepare(path, store);
+    final List<int> before = File(path).readAsBytesSync();
+    store.script.addAll(<Object?>[null, null]);
+    final int writesBefore = store.writes;
+
+    expect(await prepare(path, store), key);
+    expect(store.writes, writesBefore);
+    expect(File(path).readAsBytesSync(), before);
+  });
+
+  test('a keystore error stops the open and changes nothing', () async {
+    writePlaintextDatabase();
+    final String key = await prepare(path, store);
+    final List<int> before = File(path).readAsBytesSync();
+    store.script.addAll(<Object?>[
+      Exception('keystore'),
+      Exception('keystore'),
+      Exception('keystore'),
+    ]);
+
+    await expectLater(prepare(path, store), throwsException);
+    expect(store.value, key);
+    expect(File(path).readAsBytesSync(), before);
+  });
+
+  test('an encryption cut off before the swap is finished', () async {
+    writePlaintextDatabase();
+    final String key = await prepare(path, store);
+    // The state after the old file was deleted but before the rename.
+    File(path).renameSync('$path.encrypting');
+
+    expect(await prepare(path, store), key);
+    expect(File('$path.encrypting').existsSync(), isFalse);
+    final Database db = openWithKey(key);
+    addTearDown(db.close);
+    expect(db.select('SELECT body FROM notes').single['body'], 'kept');
+  });
+
+  test('a half-written encryption is redone from the old file', () async {
+    writePlaintextDatabase();
+    File('$path.encrypting').writeAsStringSync('partial');
+
+    final String key = await prepare(path, store);
+
+    expect(File('$path.encrypting').existsSync(), isFalse);
+    final Database db = openWithKey(key);
+    addTearDown(db.close);
+    expect(db.select('SELECT body FROM notes').single['body'], 'kept');
+  });
+
+  test('an empty file is treated as a fresh install', () async {
+    File(path).writeAsBytesSync(<int>[]);
+
+    final String key = await prepare(path, store);
+
+    expect(key, store.value);
+    expect(File(path).existsSync(), isFalse);
+  });
+
+  test('no unencrypted side file is left after encryption', () async {
+    writePlaintextDatabase();
+    File('$path-wal').writeAsBytesSync(<int>[]);
+
+    await prepare(path, store);
+
+    for (final String suffix in <String>['-wal', '-shm', '-journal']) {
+      expect(File('$path$suffix').existsSync(), isFalse, reason: suffix);
+    }
+  });
 }

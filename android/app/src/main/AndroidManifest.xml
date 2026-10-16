@@ -1,10 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- allowBackup is off: the database key lives in the Android Keystore,
-         which is never backed up, so a restored encrypted database could not
-         be opened. It also keeps balances out of cloud backups. -->
+    <!-- Backup and device transfer are off: the database key lives in the
+         Android Keystore, which is never copied, so a restored or
+         transferred database could not be opened. It also keeps balances out
+         of cloud backups. See res/xml/data_extraction_rules.xml. -->
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:label="baon"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
