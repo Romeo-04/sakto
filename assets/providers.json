@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "providers": [
+    {
+      "key": "gcash",
+      "display_name": "GCash",
+      "kind": "ewallet",
+      "brand_color": "#0057FF",
+      "logo_asset": "assets/logos/gcash.png",
+      "notification_package": "com.globe.gcash.android"
+    },
+    {
+      "key": "maya",
+      "display_name": "Maya",
+      "kind": "ewallet",
+      "brand_color": "#27AE60",
+      "logo_asset": "assets/logos/maya.png",
+      "notification_package": "com.paymaya.wallet"
+    },
+    {
+      "key": "maribank",
+      "display_name": "MariBank",
+      "kind": "digital_bank",
+      "brand_color": "#F2542D",
+      "logo_asset": "assets/logos/maribank.png",
+      "notification_package": "com.maribank.ph"
+    },
+    {
+      "key": "gotyme",
+      "display_name": "GoTyme Bank",
+      "kind": "digital_bank",
+      "brand_color": "#00B7C3",
+      "logo_asset": "assets/logos/gotyme.png",
+      "notification_package": "com.gotyme.bank"
+    },
+    {
+      "key": "seabank",
+      "display_name": "SeaBank",
+      "kind": "digital_bank",
+      "brand_color": "#EE4D2D",
+      "logo_asset": "assets/logos/seabank.png",
+      "notification_package": "com.seabank.ph"
+    },
+    {
+      "key": "unionbank",
+      "display_name": "UnionBank",
+      "kind": "traditional_bank",
+      "brand_color": "#F58220",
+      "logo_asset": "assets/logos/unionbank.png",
+      "notification_package": "com.unionbankph.online"
+    },
+    {
+      "key": "bpi",
+      "display_name": "BPI",
+      "kind": "traditional_bank",
+      "brand_color": "#B21F24",
+      "logo_asset": "assets/logos/bpi.png",
+      "notification_package": "com.bpi.ng.mobile"
+    },
+    {
+      "key": "bdo",
+      "display_name": "BDO",
+      "kind": "traditional_bank",
+      "brand_color": "#003A70",
+      "logo_asset": "assets/logos/bdo.png",
+      "notification_package": "com.bdo.digitalbanking"
+    },
+    {
+      "key": "landbank",
+      "display_name": "Landbank",
+      "kind": "traditional_bank",
+      "brand_color": "#00693E",
+      "logo_asset": "assets/logos/landbank.png",
+      "notification_package": null
+    },
+    {
+      "key": "cash",
+      "display_name": "Cash on hand",
+      "kind": "cash",
+      "brand_color": "#4B5563",
+      "logo_asset": "assets/logos/cash.png",
+      "notification_package": null
+    }
+  ]
+}

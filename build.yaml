@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # BUILD_PLAN.md Section 7: all timestamps are UTC ISO-8601 text.
+          # The integer default would silently drop the timezone.
+          store_date_time_values_as_text: true
+          named_parameters: true
