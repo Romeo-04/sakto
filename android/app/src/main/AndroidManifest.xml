@@ -1,5 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- allowBackup is off: the database key lives in the Android Keystore,
+         which is never backed up, so a restored encrypted database could not
+         be opened. It also keeps balances out of cloud backups. -->
     <application
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:label="baon"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

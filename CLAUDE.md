@@ -32,6 +32,14 @@ Follow the milestones M0 to M11 in BUILD_PLAN.md. Do not skip ahead.
 Stop and ask before you change the engine output schema in Section 8.8.
 
 ## Environment notes
-- There is no Android SDK on this machine. Verify with `flutter run -d windows`.
-- SQLCipher is not yet wired in. `lib/data/db/connection.dart` holds the single
-  seam where the cipher key is applied. See the note in that file.
+- The Android SDK is at `%LOCALAPPDATA%\Android\Sdk` (command-line tools, no
+  emulator, no device attached). Gradle needs Android Studio's Java:
+  `JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"`. The global
+  `JAVA_HOME` points at a placeholder path. Verify UI with
+  `flutter run -d windows`.
+- The database is encrypted with SQLCipher. `pubspec.yaml` selects it
+  (`hooks: user_defines: sqlite3: source: sqlcipher`), and
+  `lib/data/db/connection.dart` is the single seam that applies the key.
+- After changing the `hooks:` section, run `flutter clean` before the next
+  app build. A stale `sqlite3.dll` left in `build/` gets loaded instead of
+  SQLCipher. The tests do not catch this; only a real app run does.
