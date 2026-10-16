@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "note": "Tier 1 rule layer. BUILD_PLAN.md Section 9.2. The rule layer runs before the model. A match here is confidence 1.0 and is applied without asking.",
+  "rules": [
+    {
+      "category_key": "transport",
+      "keywords": [
+        "GRAB", "GRABCAR", "ANGKAS", "JOYRIDE", "MOVEIT", "LALAMOVE",
+        "JEEP", "JEEPNEY", "TRICYCLE", "TRIKE", "BUS", "P2P", "UV EXPRESS",
+        "LRT", "MRT", "BEEP", "AUTOSWEEP", "EASYTRIP", "TOLL",
+        "SHELL", "PETRON", "CALTEX", "SEAOIL", "PHOENIX", "CLEANFUEL",
+        "GASOLINE", "FARE", "PARKING", "TAXI"
+      ]
+    },
+    {
+      "category_key": "food_delivery",
+      "keywords": [
+        "GRABFOOD", "FOODPANDA", "PANDA", "TOKTOK FOOD", "PICK.A.ROO",
+        "GRAB FOOD"
+      ]
+    },
+    {
+      "category_key": "food_daily",
+      "keywords": [
+        "JOLLIBEE", "MCDO", "MCDONALD", "KFC", "CHOWKING", "MANG INASAL",
+        "GREENWICH", "SHAKEY", "YELLOW CAB", "ANGELS PIZZA", "BONCHON",
+        "STARBUCKS", "TIM HORTONS", "DUNKIN", "KRISPY KREME", "CAFE",
+        "COFFEE", "MILK TEA", "MILKTEA", "CHATIME", "MACAO IMPERIAL",
+        "SERENITEA", "GONG CHA", "POTATO CORNER", "CARINDERIA", "EATERY",
+        "CANTEEN", "SAMGYUP", "RAMEN", "SILOG"
+      ]
+    },
+    {
+      "category_key": "groceries",
+      "keywords": [
+        "7-ELEVEN", "7 ELEVEN", "SEVEN ELEVEN", "MINISTOP", "ALFAMART",
+        "FAMILYMART", "LAWSON", "SM SUPERMARKET", "SAVEMORE", "PUREGOLD",
+        "ROBINSONS SUPERMARKET", "WALTERMART", "S&R", "LANDERS", "RUSTAN",
+        "SUPERMARKET", "PALENGKE", "MARKET", "SARI SARI", "SARI-SARI",
+        "GROCERY"
+      ]
+    },
+    {
+      "category_key": "load_data",
+      "keywords": [
+        "GLOBE", "SMART", "TNT", "TM", "DITO", "GOMO", "SUN CELLULAR",
+        "LOAD", "PRELOAD", "AUTOLOAD", "GIGA", "PROMO LOAD", "PLDT",
+        "CONVERGE", "SKY", "INTERNET", "WIFI"
+      ]
+    },
+    {
+      "category_key": "dates_leisure",
+      "keywords": [
+        "CINEMA", "SM CINEMA", "AYALA MALLS CINEMA", "NETFLIX", "SPOTIFY",
+        "DISNEY", "HBO", "VIU", "STEAM", "PLAYSTATION", "XBOX",
+        "KTV", "VIDEOKE", "BAR", "RESORT", "HOTEL", "AIRBNB", "AGODA",
+        "KLOOK", "ARCADE", "TIMEZONE", "BOWLING"
+      ]
+    },
+    {
+      "category_key": "shopping",
+      "keywords": [
+        "SHOPEE", "LAZADA", "TIKTOK SHOP", "ZALORA", "UNIQLO", "PENSHOPPE",
+        "BENCH", "H&M", "SM STORE", "WATSONS", "MERCURY", "ACE HARDWARE",
+        "NATIONAL BOOK", "MINISO", "DAISO", "SHOP"
+      ]
+    },
+    {
+      "category_key": "health",
+      "keywords": [
+        "MERCURY DRUG", "ROSE PHARMACY", "SOUTHSTAR", "GENERIKA",
+        "PHARMACY", "DRUGSTORE", "CLINIC", "HOSPITAL", "MEDICAL",
+        "DENTAL", "DOCTOR", "LABORATORY", "PHILHEALTH", "MAXICARE"
+      ]
+    },
+    {
+      "category_key": "school",
+      "keywords": [
+        "TUITION", "ENROLLMENT", "ENROLMENT", "UNIVERSITY", "COLLEGE",
+        "SCHOOL", "REGISTRAR", "THESIS", "PHOTOCOPY", "XEROX", "PRINTING",
+        "BOOKSTORE"
+      ]
+    },
+    {
+      "category_key": "fees",
+      "keywords": [
+        "SERVICE FEE", "CONVENIENCE FEE", "TRANSFER FEE", "INSTAPAY",
+        "PESONET", "ATM FEE", "WITHDRAWAL FEE", "PENALTY", "SURCHARGE",
+        "MAINTAINING BALANCE"
+      ]
+    },
+    {
+      "category_key": "transfer_internal",
+      "keywords": [
+        "TRANSFER TO OWN", "OWN ACCOUNT", "SELF TRANSFER", "CASH IN",
+        "CASH-IN", "CASHIN", "TOP UP", "TOPUP", "FUND TRANSFER"
+      ]
+    },
+    {
+      "category_key": "savings_in",
+      "keywords": [
+        "GSAVE", "GSTOCKS", "MARIBANK SAVE", "TIME DEPOSIT", "IPON",
+        "SAVINGS DEPOSIT"
+      ]
+    },
+    {
+      "category_key": "income",
+      "keywords": [
+        "SALARY", "PAYROLL", "SWELDO", "ALLOWANCE", "BAON", "STIPEND",
+        "REFUND", "REBATE", "PAYOUT", "COMMISSION"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "as_of": "2026-09-04",
+  "currency": "PHP",
+  "account_total": 684000,
+  "unallocated": 0,
+  "envelopes": [
+    {
+      "id": "env_food",
+      "label": "Food and transport",
+      "shape": "steady",
+      "balance": 92000,
+      "refill_cents": 200000,
+      "days_left": 3,
+      "committed": 15000,
+      "committed_note": "commute, 1 weekday at 150.00",
+      "daily_burn_ewma": 24084,
+      "daily_burn_median": 25000,
+      "safe_daily": 19000,
+      "runway_days": 2.4,
+      "p_shortfall_own": 0.0,
+      "p_shortfall_with_spill": 0.5,
+      "end_balance_p10": 28000,
+      "end_balance_p50": 28000,
+      "end_balance_p90": 28000
+    },
+    {
+      "id": "env_dates",
+      "label": "Dates",
+      "shape": "episodic",
+      "balance": 120000,
+      "refill_cents": 300000,
+      "days_left": 12,
+      "event_rate_per_week": 1.0,
+      "event_size_median": 95000,
+      "events_affordable": 1,
+      "p_shortfall_own": 0.5,
+      "borrow_target": "env_food",
+      "expected_spill": 74140
+    },
+    {
+      "id": "env_savings",
+      "label": "Savings",
+      "shape": "reserve",
+      "balance": 472000
+    }
+  ],
+  "largest_lever": {
+    "envelope_id": "env_dates",
+    "action": "one fewer event this period",
+    "saving": 95000,
+    "food_risk_after": 0.0
+  },
+  "stale_accounts": [],
+  "data_quality": "good"
+}
